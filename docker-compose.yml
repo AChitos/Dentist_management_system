@@ -1,0 +1,156 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: dental_clinic_db
+    environment:
+      POSTGRES_DB: dental_clinic
+      POSTGRES_USER: dental_user
+      POSTGRES_PASSWORD: dental_password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - dental_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dental_user -d dental_clinic"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dental_clinic_backend
+    environment:
+      DATABASE_URL: postgresql://dental_user:dental_password@postgres:5432/dental_clinic
+      JWT_SECRET: your-super-secret-jwt-key-here-change-in-production
+      JWT_EXPIRES_IN: 24h
+      PORT: 3001
+      NODE_ENV: production
+      CORS_ORIGIN: http://localhost:3000
+      BACKUP_PATH: /app/backups
+      BACKUP_RETENTION_DAYS: 30
+    volumes:
+      - backend_uploads:/app/uploads
+      - backend_backups:/app/backups
+    ports:
+      - "3001:3001"
+    networks:
+      - dental_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend React App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: dental_clinic_frontend
+    environment:
+      VITE_API_URL: http://localhost:3001/api
+      VITE_APP_NAME: Dental Clinic Management
+    ports:
+      - "3000:80"
+    networks:
+      - dental_network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: dental_clinic_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - dental_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx Reverse Proxy (optional)
+  nginx:
+    image: nginx:alpine
+    container_name: dental_clinic_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    networks:
+      - dental_network
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+
+  # Backup Service (optional)
+  backup:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backup
+    container_name: dental_clinic_backup
+    environment:
+      DATABASE_URL: postgresql://dental_user:dental_password@postgres:5432/dental_clinic
+      BACKUP_PATH: /app/backups
+      BACKUP_RETENTION_DAYS: 30
+      BACKUP_SCHEDULE: "0 2 * * *"  # Daily at 2 AM
+    volumes:
+      - backup_data:/app/backups
+    networks:
+      - dental_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    command: ["sh", "-c", "cron && tail -f /dev/null"]
+
+volumes:
+  postgres_data:
+    driver: local
+  backend_uploads:
+    driver: local
+  backend_backups:
+    driver: local
+  redis_data:
+    driver: local
+  backup_data:
+    driver: local
+
+networks:
+  dental_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# Health check for the entire stack
+x-healthcheck:
+  test: ["CMD", "curl", "-f", "http://localhost:3000"]
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 40s
