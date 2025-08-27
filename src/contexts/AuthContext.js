@@ -34,6 +34,7 @@ export function AuthProvider({ children }) {
 
   const login = async (username, password) => {
     try {
+      console.log('AuthContext: Starting login process...')
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -43,18 +44,21 @@ export function AuthProvider({ children }) {
       })
 
       const data = await response.json()
+      console.log('AuthContext: Login response:', data)
 
       if (response.ok) {
         localStorage.setItem('token', data.token)
         localStorage.setItem('user', JSON.stringify(data.user))
         setUser(data.user)
         setIsAuthenticated(true)
+        console.log('AuthContext: Login successful, state updated')
         return { success: true }
       } else {
+        console.log('AuthContext: Login failed:', data.error)
         return { success: false, error: data.error }
       }
     } catch (error) {
-      console.error('Login error:', error)
+      console.error('AuthContext: Login error:', error)
       return { success: false, error: 'Network error occurred' }
     }
   }

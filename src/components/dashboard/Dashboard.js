@@ -1,80 +1,173 @@
 'use client'
 
-import { useAuth } from '../../contexts/AuthContext'
-import { Activity, LogOut } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import Layout from '../layout/Layout'
+import StatCard from './StatCard'
+import AppointmentChart from './AppointmentChart'
+import RecentAppointments from './RecentAppointments'
+import TopTreatments from './TopTreatments'
+import RevenueChart from './RevenueChart'
+import { Activity, Users, Calendar, DollarSign, TrendingUp } from 'lucide-react'
 
 export default function Dashboard() {
-  const { user, logout } = useAuth()
+  const [stats, setStats] = useState({
+    totalPatients: 0,
+    todayAppointments: 0,
+    monthlyRevenue: 0,
+    monthlyTreatments: 0
+  })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchDashboardStats()
+  }, [])
+
+  const fetchDashboardStats = async () => {
+    try {
+      const response = await fetch('/api/dashboard/stats')
+      const data = await response.json()
+      
+      if (response.ok) {
+        setStats(data.stats)
+      }
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const statCards = [
+    {
+      title: 'Total Patients',
+      value: stats.totalPatients,
+      icon: Users,
+      color: 'from-blue-500 to-blue-600',
+      change: '+12%',
+      changeType: 'positive'
+    },
+    {
+      title: 'Today\'s Appointments',
+      value: stats.todayAppointments,
+      icon: Calendar,
+      color: 'from-green-500 to-green-600',
+      change: '+5%',
+      changeType: 'positive'
+    },
+    {
+      title: 'Monthly Revenue',
+      value: `$${stats.monthlyRevenue.toLocaleString()}`,
+      icon: DollarSign,
+      color: 'from-purple-500 to-purple-600',
+      change: '+18%',
+      changeType: 'positive'
+    },
+    {
+      title: 'Monthly Treatments',
+      value: stats.monthlyTreatments,
+      icon: Activity,
+      color: 'from-orange-500 to-orange-600',
+      change: '+8%',
+      changeType: 'positive'
+    }
+  ]
+
+  if (loading) {
+    return (
+      <Layout activePage="dashboard">
+        <div className="flex items-center justify-center h-96">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-apple-blue"></div>
+        </div>
+      </Layout>
+    )
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-blue-50 p-4">
-      {/* Header */}
-      <div className="glass-card p-6 rounded-3xl mb-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-apple-blue to-blue-600 rounded-2xl flex items-center justify-center">
-              <Activity className="w-6 h-6 text-white" />
+    <Layout activePage="dashboard">
+      {/* Welcome Section */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-apple-dark mb-2">Welcome back! 👋</h1>
+        <p className="text-apple-gray">Here's what's happening at your dental clinic today.</p>
+      </div>
+
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {statCards.map((stat, index) => (
+          <StatCard key={index} {...stat} />
+        ))}
+      </div>
+
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Appointments Chart */}
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-semibold text-apple-dark mb-4">Appointments Overview</h3>
+          <AppointmentChart />
+        </div>
+
+        {/* Revenue Chart */}
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-semibold text-apple-dark mb-4">Revenue Trends</h3>
+          <RevenueChart />
+        </div>
+      </div>
+
+      {/* Bottom Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Appointments */}
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-semibold text-apple-dark mb-4">Recent Appointments</h3>
+          <RecentAppointments />
+        </div>
+
+        {/* Top Treatments */}
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-semibold text-apple-dark mb-4">Top Treatments</h3>
+          <TopTreatments />
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="mt-8">
+        <h3 className="text-lg font-semibold text-apple-dark mb-4">Quick Actions</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button className="glass-card p-4 text-left hover:shadow-apple-hover transition-all duration-200">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                <Users className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h4 className="font-medium text-apple-dark">Add New Patient</h4>
+                <p className="text-sm text-apple-gray">Register a new patient</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-apple-dark">Zendenta</h1>
-              <p className="text-apple-gray">Welcome back, {user?.username || 'User'}!</p>
+          </button>
+
+          <button className="glass-card p-4 text-left hover:shadow-apple-hover transition-all duration-200">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                <Calendar className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h4 className="font-medium text-apple-dark">Schedule Appointment</h4>
+                <p className="text-sm text-apple-gray">Book a new appointment</p>
+              </div>
             </div>
-          </div>
-          <button
-            onClick={logout}
-            className="btn-secondary flex items-center space-x-2"
-          >
-            <LogOut size={20} />
-            <span>Logout</span>
+          </button>
+
+          <button className="glass-card p-4 text-left hover:shadow-apple-hover transition-all duration-200">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h4 className="font-medium text-apple-dark">View Reports</h4>
+                <p className="text-sm text-apple-gray">Generate clinic reports</p>
+              </div>
+            </div>
           </button>
         </div>
       </div>
-
-      {/* Main Content */}
-      <div className="glass-card p-8 rounded-3xl text-center">
-        <div className="w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-          <Activity className="w-12 h-12 text-white" />
-        </div>
-        
-        <h2 className="text-3xl font-bold text-apple-dark mb-4">
-          🎉 Successfully Logged In!
-        </h2>
-        
-        <p className="text-lg text-apple-gray mb-8 max-w-2xl mx-auto">
-          Welcome to your dental clinic management system. The backend API is working perfectly, 
-          and you're now authenticated. This is a simplified dashboard view.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          {/* API Status */}
-          <div className="bg-green-50 border border-green-200 p-6 rounded-2xl">
-            <h3 className="font-semibold text-green-800 mb-2">API Status</h3>
-            <p className="text-green-600">✅ Connected</p>
-          </div>
-
-          {/* Authentication */}
-          <div className="bg-blue-50 border border-blue-200 p-6 rounded-2xl">
-            <h3 className="font-semibold text-blue-800 mb-2">Authentication</h3>
-            <p className="text-blue-600">✅ JWT Active</p>
-          </div>
-
-          {/* Database */}
-          <div className="bg-purple-50 border border-purple-200 p-6 rounded-2xl">
-            <h3 className="font-semibold text-purple-800 mb-2">Database</h3>
-            <p className="text-purple-600">✅ SQLite Ready</p>
-          </div>
-        </div>
-
-        <div className="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-2xl">
-          <h3 className="font-semibold text-gray-800 mb-3">Next Steps</h3>
-          <div className="text-sm text-gray-600 space-y-2">
-            <p>• The application is now running successfully on Next.js</p>
-            <p>• All API endpoints are functional</p>
-            <p>• Ready for Vercel deployment</p>
-            <p>• Database can be initialized via <code className="bg-gray-200 px-2 py-1 rounded">/api/init-db</code></p>
-          </div>
-        </div>
-      </div>
-    </div>
+    </Layout>
   )
 }

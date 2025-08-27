@@ -4,20 +4,14 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Login from '../components/auth/Login'
 import Dashboard from '../components/dashboard/Dashboard'
-import { AuthProvider } from '../contexts/AuthContext'
+import { AuthProvider, useAuth } from '../contexts/AuthContext'
 
-export default function Home() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const router = useRouter()
+function HomeContent() {
+  const { isAuthenticated, isLoading } = useAuth()
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      setIsAuthenticated(true)
-    }
-    setIsLoading(false)
-  }, [])
+    console.log('HomeContent: Authentication state changed:', { isAuthenticated, isLoading })
+  }, [isAuthenticated, isLoading])
 
   if (isLoading) {
     return (
@@ -30,9 +24,14 @@ export default function Home() {
     )
   }
 
+  console.log('HomeContent: Rendering with state:', { isAuthenticated, isLoading })
+  return isAuthenticated ? <Dashboard /> : <Login />
+}
+
+export default function Home() {
   return (
     <AuthProvider>
-      {isAuthenticated ? <Dashboard /> : <Login />}
+      <HomeContent />
     </AuthProvider>
   )
 }

@@ -17,10 +17,14 @@ export default function Login() {
     setIsLoading(true)
     setError('')
 
+    console.log('Attempting login...')
     const result = await login(username, password)
+    console.log('Login result:', result)
     
     if (!result.success) {
       setError(result.error)
+    } else {
+      console.log('Login successful, should redirect to dashboard')
     }
     
     setIsLoading(false)
