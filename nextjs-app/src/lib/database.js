@@ -1,0 +1,37 @@
+import sqlite3 from 'sqlite3'
+import { open } from 'sqlite'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+let db = null
+
+export async function getDatabase() {
+  if (db) {
+    return db
+  }
+
+  const dbPath = path.join(process.cwd(), 'database', 'dentist.db')
+  
+  db = await open({
+    filename: dbPath,
+    driver: sqlite3.Database
+  })
+
+  // Enable WAL mode for better performance
+  await db.exec('PRAGMA journal_mode = WAL')
+  
+  // Enable foreign keys
+  await db.exec('PRAGMA foreign_keys = ON')
+
+  return db
+}
+
+export async function closeDatabase() {
+  if (db) {
+    await db.close()
+    db = null
+  }
+}

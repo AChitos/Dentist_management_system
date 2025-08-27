@@ -111,6 +111,7 @@ Dentist_management_system/
 - [x] Settings and configuration
 - [x] Help and support system
 - [x] Advanced search and filtering
+- [x] Deployment configuration and guides
 - [ ] Calendar integration
 - [ ] Testing and deployment
 
@@ -179,6 +180,20 @@ Dentist_management_system/
 ### Default Login Credentials
 - **Username**: admin
 - **Password**: admin123
+
+### Quick Start (Local Development)
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd Dentist_management_system
+
+# Run the quick start script
+chmod +x quick-start.sh
+./quick-start.sh
+```
+
+### Deployment
+For production deployment, see [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions on deploying to Vercel and other platforms.
 
 ## Usage
 

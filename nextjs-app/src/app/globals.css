@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-white to-blue-50 min-h-screen;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-apple;
+  }
+  
+  .glass-card-hover {
+    @apply hover:bg-white/80 hover:shadow-apple-hover transition-all duration-300;
+  }
+  
+  .btn-primary {
+    @apply bg-apple-blue text-white px-6 py-3 rounded-2xl font-medium shadow-apple hover:shadow-apple-hover transition-all duration-300;
+  }
+  
+  .btn-secondary {
+    @apply bg-white/80 text-apple-blue px-6 py-3 rounded-2xl font-medium border border-apple-blue/20 shadow-apple hover:shadow-apple-hover transition-all duration-300;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-apple-blue focus:ring-2 focus:ring-apple-blue/20 transition-all duration-300;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-apple-blue to-blue-600 bg-clip-text text-transparent;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
