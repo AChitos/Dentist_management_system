@@ -1,37 +1,27 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import Login from '../components/auth/Login'
-import Dashboard from '../components/dashboard/Dashboard'
-import { AuthProvider, useAuth } from '../contexts/AuthContext'
 
-function HomeContent() {
-  const { isAuthenticated, isLoading } = useAuth()
+export default function Home() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-  useEffect(() => {
-    console.log('HomeContent: Authentication state changed:', { isAuthenticated, isLoading })
-  }, [isAuthenticated, isLoading])
-
-  if (isLoading) {
+  if (isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-blue-50">
+      <div className="min-h-screen bg-gradient-to-br from-white to-blue-50 p-4">
         <div className="glass-card p-8 rounded-3xl text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-apple-blue mx-auto mb-4"></div>
-          <p className="text-apple-gray">Loading Zendenta...</p>
+          <h1 className="text-3xl font-bold text-apple-dark mb-4">Welcome to Zendenta!</h1>
+          <p className="text-apple-gray mb-6">You are successfully logged in.</p>
+          <button
+            onClick={() => setIsAuthenticated(false)}
+            className="btn-primary"
+          >
+            Logout
+          </button>
         </div>
       </div>
     )
   }
 
-  console.log('HomeContent: Rendering with state:', { isAuthenticated, isLoading })
-  return isAuthenticated ? <Dashboard /> : <Login />
-}
-
-export default function Home() {
-  return (
-    <AuthProvider>
-      <HomeContent />
-    </AuthProvider>
-  )
+  return <Login />
 }

@@ -1,9 +1,18 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { Chart, registerables } from 'chart.js'
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js'
 
-Chart.register(...registerables)
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+)
 
 export default function AppointmentChart() {
   const chartRef = useRef(null)
@@ -18,7 +27,7 @@ export default function AppointmentChart() {
         chartInstance.current.destroy()
       }
 
-      chartInstance.current = new Chart(ctx, {
+      chartInstance.current = new ChartJS(ctx, {
         type: 'line',
         data: {
           labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],

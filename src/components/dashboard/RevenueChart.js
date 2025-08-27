@@ -1,9 +1,16 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { Chart, registerables } from 'chart.js'
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js'
 
-Chart.register(...registerables)
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+)
 
 export default function RevenueChart() {
   const chartRef = useRef(null)
@@ -18,7 +25,7 @@ export default function RevenueChart() {
         chartInstance.current.destroy()
       }
 
-      chartInstance.current = new Chart(ctx, {
+      chartInstance.current = new ChartJS(ctx, {
         type: 'bar',
         data: {
           labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
