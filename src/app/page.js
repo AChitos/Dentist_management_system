@@ -1,8 +1,8 @@
 'use client'
 
-import { useAuth } from '../contexts/AuthContext'
-import SimpleLogin from '../components/SimpleLogin'
-import SimpleDashboard from '../components/SimpleDashboard'
+import { useAuth } from '@/contexts/AuthContext'
+import SimpleLogin from '@/components/SimpleLogin'
+import SimpleDashboard from '@/components/SimpleDashboard'
 
 export default function Home() {
   const { isAuthenticated, isLoading } = useAuth()
