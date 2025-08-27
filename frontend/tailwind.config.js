@@ -1,15 +1,11 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./public/index.html"
   ],
   theme: {
     extend: {
-      fontFamily: {
-        'sf': ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        'sf-mono': ['SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Bitstream Vera Sans Mono', 'Liberation Mono', 'monospace'],
-      },
       colors: {
         // Apple-inspired color palette
         primary: {
@@ -37,16 +33,16 @@ export default {
           900: '#0f172a',
         },
         accent: {
-          50: '#fef7ee',
-          100: '#fdedd6',
-          200: '#fbd7ad',
-          300: '#f8bb79',
-          400: '#f59542',
-          500: '#f2751a',
-          600: '#e35d10',
-          700: '#bc4610',
-          800: '#963814',
-          900: '#7a3014',
+          50: '#fef2f2',
+          100: '#fee2e2',
+          200: '#fecaca',
+          300: '#fca5a5',
+          400: '#f87171',
+          500: '#ef4444',
+          600: '#dc2626',
+          700: '#b91c1c',
+          800: '#991b1b',
+          900: '#7f1d1d',
         },
         success: {
           50: '#f0fdf4',
@@ -71,29 +67,42 @@ export default {
           700: '#b45309',
           800: '#92400e',
           900: '#78350f',
-        },
-        error: {
-          50: '#fef2f2',
-          100: '#fee2e2',
-          200: '#fecaca',
-          300: '#fca5a5',
-          400: '#f87171',
-          500: '#ef4444',
-          600: '#dc2626',
-          700: '#b91c1c',
-          800: '#991b1b',
-          900: '#7f1d1d',
-        },
-        // Glass morphism colors
-        glass: {
-          white: 'rgba(255, 255, 255, 0.1)',
-          black: 'rgba(0, 0, 0, 0.1)',
-          primary: 'rgba(14, 165, 233, 0.1)',
-          secondary: 'rgba(71, 85, 105, 0.1)',
-        },
+        }
+      },
+      fontFamily: {
+        'sf': ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        'sf-mono': ['SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Bitstream Vera Sans Mono', 'Liberation Mono', 'monospace'],
+      },
+      fontSize: {
+        'xs': ['0.75rem', { lineHeight: '1rem' }],
+        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
+        'base': ['1rem', { lineHeight: '1.5rem' }],
+        'lg': ['1.125rem', { lineHeight: '1.75rem' }],
+        'xl': ['1.25rem', { lineHeight: '1.75rem' }],
+        '2xl': ['1.5rem', { lineHeight: '2rem' }],
+        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
+        '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
+        '5xl': ['3rem', { lineHeight: '1' }],
+        '6xl': ['3.75rem', { lineHeight: '1' }],
+      },
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+        '128': '32rem',
+      },
+      borderRadius: {
+        'xl': '0.75rem',
+        '2xl': '1rem',
+        '3xl': '1.5rem',
+      },
+      boxShadow: {
+        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
+        'medium': '0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        'large': '0 10px 40px -10px rgba(0, 0, 0, 0.15), 0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+        'glow': '0 0 20px rgba(14, 165, 233, 0.3)',
       },
       backdropBlur: {
-        xs: '2px',
+        'xs': '2px',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
@@ -124,21 +133,10 @@ export default {
           '50%': { transform: 'translateY(-5px)' },
         },
       },
-      boxShadow: {
-        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
-        'glass-sm': '0 4px 16px 0 rgba(31, 38, 135, 0.37)',
-        'glass-lg': '0 16px 64px 0 rgba(31, 38, 135, 0.37)',
-        'inner-glow': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.1)',
-      },
-      borderRadius: {
-        'xl': '1rem',
-        '2xl': '1.5rem',
-        '3xl': '2rem',
-      },
-      spacing: {
-        '18': '4.5rem',
-        '88': '22rem',
-        '128': '32rem',
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'glass': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
       },
     },
   },
