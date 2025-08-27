@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from '../../contexts/AuthContext'
+import { useAuth } from '../contexts/AuthContext'
 
-export default function Login() {
+export default function SimpleLogin() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -15,14 +15,10 @@ export default function Login() {
     setIsLoading(true)
     setError('')
 
-    console.log('Attempting login...')
     const result = await login(username, password)
-    console.log('Login result:', result)
     
     if (!result.success) {
       setError(result.error)
-    } else {
-      console.log('Login successful, should redirect to dashboard')
     }
     
     setIsLoading(false)
@@ -31,19 +27,13 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-blue-50 p-4">
       <div className="w-full max-w-md">
-        {/* Logo and Title */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl mb-4 shadow-lg">
-            <div className="w-10 h-10 bg-white rounded-full"></div>
-          </div>
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Zendenta</h1>
           <p className="text-gray-600">Dental Clinic Management System</p>
         </div>
 
-        {/* Login Form */}
         <div className="bg-white/70 backdrop-blur-md border border-white/20 p-8 rounded-3xl shadow-lg">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Username Field */}
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
                 Username
@@ -59,7 +49,6 @@ export default function Login() {
               />
             </div>
 
-            {/* Password Field */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 Password
@@ -75,31 +64,21 @@ export default function Login() {
               />
             </div>
 
-            {/* Error Message */}
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl text-sm">
                 {error}
               </div>
             )}
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
               className="w-full bg-blue-500 text-white px-6 py-3 rounded-2xl font-medium hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Signing in...
-                </div>
-              ) : (
-                'Sign In'
-              )}
+              {isLoading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          {/* Demo Credentials */}
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-2xl">
             <h3 className="text-sm font-medium text-blue-800 mb-2">Demo Credentials</h3>
             <div className="text-xs text-blue-700 space-y-1">
@@ -107,13 +86,6 @@ export default function Login() {
               <p><strong>Password:</strong> admin123</p>
             </div>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="text-center mt-6">
-          <p className="text-sm text-gray-500">
-            Secure • Professional • Reliable
-          </p>
         </div>
       </div>
     </div>

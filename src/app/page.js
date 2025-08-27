@@ -1,27 +1,26 @@
 'use client'
 
-import { useState } from 'react'
-import Login from '../components/auth/Login'
+import { useAuth } from '../contexts/AuthContext'
+import SimpleLogin from '../components/SimpleLogin'
+import Dashboard from '../components/dashboard/Dashboard'
 
 export default function Home() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const { isAuthenticated, isLoading } = useAuth()
 
-  if (isAuthenticated) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-white to-blue-50 p-4">
-        <div className="glass-card p-8 rounded-3xl text-center">
-          <h1 className="text-3xl font-bold text-apple-dark mb-4">Welcome to Zendenta!</h1>
-          <p className="text-apple-gray mb-6">You are successfully logged in.</p>
-          <button
-            onClick={() => setIsAuthenticated(false)}
-            className="btn-primary"
-          >
-            Logout
-          </button>
+      <div className="min-h-screen bg-gradient-to-br from-white to-blue-50 flex items-center justify-center">
+        <div className="bg-white/70 backdrop-blur-md border border-white/20 rounded-3xl p-8 text-center shadow-lg">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
         </div>
       </div>
     )
   }
 
-  return <Login />
+  if (!isAuthenticated) {
+    return <SimpleLogin />
+  }
+
+  return <Dashboard />
 }
