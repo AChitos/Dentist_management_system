@@ -2,7 +2,7 @@
 
 import { useAuth } from '../contexts/AuthContext'
 import SimpleLogin from '../components/SimpleLogin'
-import Dashboard from '../components/dashboard/Dashboard'
+import SimpleDashboard from '../components/SimpleDashboard'
 
 export default function Home() {
   const { isAuthenticated, isLoading } = useAuth()
@@ -22,5 +22,5 @@ export default function Home() {
     return <SimpleLogin />
   }
 
-  return <Dashboard />
+  return <SimpleDashboard />
 }
